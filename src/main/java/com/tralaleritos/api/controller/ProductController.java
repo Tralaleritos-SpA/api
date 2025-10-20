@@ -1,0 +1,87 @@
+package com.tralaleritos.api.controller;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.tralaleritos.api.model.Product;
+import com.tralaleritos.api.service.ProductService;
+
+@RequestMapping("/api/v1/products")
+@RestController
+public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    @GetMapping
+    public ResponseEntity<List<Product>> getProducts() {
+        List<Product> products = productService.findAllProducts();
+
+        if (!products.isEmpty()) {
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable UUID id) {
+        Optional<Product> productOptional = productService.findProductById(id);
+
+        if (productOptional.isPresent()) {
+
+            Product product = productOptional.get();
+            return new ResponseEntity<>(product, HttpStatus.OK);
+
+        } else {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        // ID should be null for a new resource; let the service/DB generate the UUID
+        if (product.getId() != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Product savedProduct = productService.saveProduct(product);
+
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable UUID id, @RequestBody Product productDetails) {
+
+        // Ensure the ID in the URL matches the ID in the request body
+        if (!id.equals(productDetails.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Product updatedProduct = productService.updateProduct(productDetails);
+
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable UUID id) {
+        productService.deleteProduct(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+}
