@@ -36,6 +36,16 @@ public class BrandController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<List<Brand>> getActiveBrands() {
+        List<Brand> brands = brandService.findActiveBrands();
+
+        if (!brands.isEmpty()) {
+            return new ResponseEntity<>(brands, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Brand> getBrandById(@PathVariable UUID id) {
         Optional<Brand> brandOptional = brandService.findBrandById(id);

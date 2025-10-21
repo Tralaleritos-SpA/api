@@ -27,6 +27,10 @@ public class BrandService {
         return brandRepository.findAll();
     }
 
+    public List<Brand> findActiveBrands() {
+        return brandRepository.findByActiveTrue();
+    }
+
     public Optional<Brand> findBrandById(UUID id) {
         return brandRepository.findById(id);
     }
@@ -45,6 +49,10 @@ public class BrandService {
         if (!brandRepository.existsById(id)) {
             throw new ResourceNotFoundException("Brand with ID " + id + " not found. Delete failed.");
         }
-        brandRepository.deleteById(id);
+
+        Brand deactivatedBrand = brandRepository.findById(id).get();
+        deactivatedBrand.setActive(false);
+
+        brandRepository.save(deactivatedBrand);
     }
 }
