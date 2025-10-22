@@ -29,6 +29,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public List<Product> findActiveProducts() {
+        return productRepository.findByActiveTrue();
+    }
+
     // READ: Retrieve a single Product by its UUID
     public Optional<Product> findProductById(UUID id) {
         return productRepository.findById(id);

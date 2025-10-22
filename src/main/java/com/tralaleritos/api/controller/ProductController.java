@@ -36,6 +36,16 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<List<Product>> getActiveCategories() {
+        List<Product> products = productService.findActiveProducts();
+
+        if (!products.isEmpty()) {
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable UUID id) {
         Optional<Product> productOptional = productService.findProductById(id);
