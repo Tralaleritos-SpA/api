@@ -6,10 +6,10 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.tralaleritos.api.model.Product;
+import com.tralaleritos.api.model.Brand;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, UUID> {
+public interface BrandRepository extends JpaRepository<Brand, UUID> {
 
-    List<Product> findByActiveTrue();
+    List<Brand> findByActiveTrue();
 }

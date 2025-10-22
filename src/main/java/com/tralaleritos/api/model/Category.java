@@ -23,10 +23,9 @@ public class Category {
     private UUID id;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private boolean active;
 
     @Column(name = "category_name", nullable = false, length = 150, unique = true)
     private String name;
 
-    
 }

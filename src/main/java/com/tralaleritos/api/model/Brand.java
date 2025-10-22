@@ -24,7 +24,7 @@ public class Brand {
     private UUID id;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private boolean active;
 
     @Column(name = "brand_name", nullable = false, length = 150, unique = true)
     private String name;
