@@ -27,7 +27,7 @@ public class Product {
     private UUID id;
 
     @Column(nullable = false)
-    private boolean active;
+    private boolean active = true;
 
     @Column(nullable = false, length = 200, unique = true)
     private String name;
