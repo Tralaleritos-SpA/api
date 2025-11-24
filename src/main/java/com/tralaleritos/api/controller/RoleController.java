@@ -27,33 +27,33 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping
-    public ResponseEntity<List<Brand>> getBrands() {
-        List<Brand> brands = brandService.findAllBrands();
+    public ResponseEntity<List<Role>> getRoles() {
+        List<Role> roles = roleService.findAllRoles();
 
-        if (!brands.isEmpty()) {
-            return new ResponseEntity<>(brands, HttpStatus.OK);
+        if (!roles.isEmpty()) {
+            return new ResponseEntity<>(roles, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<Brand>> getActiveBrands() {
-        List<Brand> brands = brandService.findActiveBrands();
+    public ResponseEntity<List<Role>> getActiveRoles() {
+        List<Role> roles = roleService.findActiveRoles();
 
-        if (!brands.isEmpty()) {
-            return new ResponseEntity<>(brands, HttpStatus.OK);
+        if (!roles.isEmpty()) {
+            return new ResponseEntity<>(roles, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Brand> getBrandById(@PathVariable UUID id) {
-        Optional<Brand> brandOptional = brandService.findBrandById(id);
+    public ResponseEntity<Role> getRoleById(@PathVariable UUID id) {
+        Optional<Role> roleOptional = roleService.findRoleById(id);
 
-        if (brandOptional.isPresent()) {
+        if (roleOptional.isPresent()) {
 
-            Brand brand = brandOptional.get();
-            return new ResponseEntity<>(brand, HttpStatus.OK);
+            Role role = roleOptional.get();
+            return new ResponseEntity<>(role, HttpStatus.OK);
 
         } else {
 
@@ -63,31 +63,31 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<Brand> createBrand(@RequestBody Brand brand) {
-        if (brand.getId() != null) {
+    public ResponseEntity<Role> createBrand(@RequestBody Role role) {
+        if (role.getId() != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Brand savedBrand = brandService.saveBrand(brand);
+        Role savedRole = roleService.saveRole(role);
 
-        return new ResponseEntity<>(savedBrand, HttpStatus.CREATED);
+        return new ResponseEntity<>(savedRole, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Brand> updateBrand(@PathVariable UUID id, @RequestBody Brand brandDetails) {
+    public ResponseEntity<Role> updateBrand(@PathVariable UUID id, @RequestBody Role roleDetails) {
 
-        if (!id.equals(brandDetails.getId())) {
+        if (!id.equals(roleDetails.getId())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Brand updatedBrand = brandService.updateBrand(brandDetails);
+        Role updatedRole = roleService.updateRole(roleDetails);
 
-        return new ResponseEntity<>(updatedBrand, HttpStatus.OK);
+        return new ResponseEntity<>(updatedRole, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteBrand(@PathVariable UUID id) {
-        brandService.deleteBrand(id);
+        roleService.deleteRole(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
