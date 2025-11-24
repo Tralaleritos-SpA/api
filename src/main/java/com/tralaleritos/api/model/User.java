@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "user_table")
 public class User {
 
     @Id
@@ -32,6 +32,9 @@ public class User {
     @Column(nullable = false, length = 150, unique = false)
     private String name;
 
+    @Column(nullable = false, length = 150, unique = false)
+    private String last_name;
+
     @Column(nullable = false)
     private String email;
 
@@ -39,7 +42,7 @@ public class User {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
+    @JoinColumn(name = "role_id", nullable = true)
     private Role role;
 
     @Column(nullable = false)
