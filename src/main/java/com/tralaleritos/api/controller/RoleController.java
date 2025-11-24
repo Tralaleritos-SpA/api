@@ -63,7 +63,7 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<Role> createBrand(@RequestBody Role role) {
+    public ResponseEntity<Role> createRole(@RequestBody Role role) {
         if (role.getId() != null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -74,7 +74,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Role> updateBrand(@PathVariable UUID id, @RequestBody Role roleDetails) {
+    public ResponseEntity<Role> updateRole(@PathVariable UUID id, @RequestBody Role roleDetails) {
 
         if (!id.equals(roleDetails.getId())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -86,7 +86,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteBrand(@PathVariable UUID id) {
+    public ResponseEntity<HttpStatus> deleteRole(@PathVariable UUID id) {
         roleService.deleteRole(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
