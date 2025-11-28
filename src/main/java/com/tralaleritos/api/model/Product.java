@@ -45,7 +45,7 @@ public class Product {
     @Column(nullable = true)
     private String img_url;
 
-    @Column(nullable = true, length = 400, unique = true)
+    @Column(nullable = true, length = 3000, unique = true)
     private String description;
 
     @ManyToOne
