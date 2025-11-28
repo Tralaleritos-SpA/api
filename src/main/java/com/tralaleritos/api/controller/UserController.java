@@ -93,7 +93,7 @@ public class UserController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    //esto es la coneccion del login a la api desde el userservice que hiciste
+    //esto es la conexion del login a la api desde el userservice que hiciste
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
 
@@ -101,7 +101,7 @@ public class UserController {
         String password = body.get("password");
         //busca por el email en la base de datos
         Optional<User> optionalUser = userService.findByEmail(email);
-        //si no lo encuentra, devuelve un error 401
+        //si no lo encuentra, devuelve un error
         if (!optionalUser.isPresent()) {
             return ResponseEntity.status(401).body("Correo o contraseña incorrectos");
         }
