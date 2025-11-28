@@ -76,4 +76,16 @@ public class UserService {
 
         userRepository.save(deactivatedUser);
     }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    
+    // Verifica si la contraseña real antes hachearla coincide con el hash almacenado
+    public boolean isPasswordCorrect(User user, String rawPassword) {
+
+        return passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
 }

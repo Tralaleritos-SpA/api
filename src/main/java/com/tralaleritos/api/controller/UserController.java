@@ -3,6 +3,7 @@ package com.tralaleritos.api.controller;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tralaleritos.api.DTO.StoredUser;
 import com.tralaleritos.api.model.User;
 import com.tralaleritos.api.service.UserService;
 
@@ -90,6 +92,36 @@ public class UserController {
         userService.deleteUser(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    //esto es la coneccion del login a la api desde el userservice que hiciste
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+
+        String email = body.get("email");
+        String password = body.get("password");
+        //busca por el email en la base de datos
+        Optional<User> optionalUser = userService.findByEmail(email);
+        //si no lo encuentra, devuelve un error 401
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(401).body("Correo o contraseña incorrectos");
+        }
+        //si lo encuentra, verifica la contraseña
+        User user = optionalUser.get();
+
+        //si la contraseña es incorrecta, devuelve un error 
+        if (!userService.isPasswordCorrect(user, password)) {
+            return ResponseEntity.status(401).body("Correo o contraseña incorrectos");
+        }
+
+        StoredUser resp = new StoredUser(
+                user.getId(),
+                user.getName(),
+                user.getLast_name(),
+                user.getEmail(),
+                user.getRole(),
+                user.isDuoc());
+
+        return ResponseEntity.ok(resp);
     }
 
 }
