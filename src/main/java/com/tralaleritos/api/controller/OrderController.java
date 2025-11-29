@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.PutMapping;
+import com.tralaleritos.api.DTO.OrderStatusUpdateDTO;
+
 import com.tralaleritos.api.DTO.OrderRequestDTO;
 import com.tralaleritos.api.model.Order;
 import com.tralaleritos.api.service.OrderService;
@@ -30,22 +33,25 @@ public class OrderController {
     public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO request) {
         try {
             Optional<Order> orderOptional = orderService.createOrder(request);
-            
+
             if (orderOptional.isPresent()) {
                 return new ResponseEntity<>(orderOptional.get(), HttpStatus.CREATED); // 201 CREATED
             } else {
-                 return new ResponseEntity<>("Usuario o uno o más productos no encontrados.", HttpStatus.NOT_FOUND); // 404 Not Found
+                return new ResponseEntity<>("Usuario o uno o más productos no encontrados.", HttpStatus.NOT_FOUND); // 404
+                                                                                                                    // Not
+                                                                                                                    // Found
             }
-            
+
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // 400 Bad Request
-            
+
         } catch (Exception e) {
-            return new ResponseEntity<>("Error interno del servidor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+            return new ResponseEntity<>("Error interno del servidor: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
-    
-    // Endpoint 2: GET /api/v1/orders/{id} (Consulta de detalle de un solo pedido)
+
+    // (Consulta de detalle de un solo pedido)
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable UUID id) {
         Optional<Order> orderOptional = orderService.findOrderById(id);
@@ -53,14 +59,34 @@ public class OrderController {
         if (orderOptional.isPresent()) {
             return new ResponseEntity<>(orderOptional.get(), HttpStatus.OK); // 200 OK
         } else {
-            return new ResponseEntity<>("Pedido con ID " + id + " no encontrado.", HttpStatus.NOT_FOUND); // 404 Not Found
+            return new ResponseEntity<>("Pedido con ID " + id + " no encontrado.", HttpStatus.NOT_FOUND); // 404 Not
+                                                                                                          // Found
         }
     }
-    
-    // Endpoint 3: GET /api/v1/orders/user/{userId} (Consulta de TODOS los pedidos de un usuario)
+
+    /// (Consulta de TODOS los pedidos de un usuario)
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable UUID userId) {
         List<Order> orders = orderService.findAllOrdersByUserId(userId);
         return new ResponseEntity<>(orders, HttpStatus.OK); // 200 OK
+    }
+
+    // (Actualizar estado del pedido)
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateOrderStatus(@PathVariable UUID id, @RequestBody OrderStatusUpdateDTO request) {
+        Optional<Order> updatedOrder = orderService.updateOrderStatus(id, request.getStatus());
+
+        if (updatedOrder.isPresent()) {
+            return new ResponseEntity<>(updatedOrder.get(), HttpStatus.OK); // 200 OK
+        } else {
+            return new ResponseEntity<>("Pedido con ID " + id + " no encontrado.", HttpStatus.NOT_FOUND); // 404
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Order>> getAllOrders() {
+
+        List<Order> orders = orderService.findAllOrders();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 }
