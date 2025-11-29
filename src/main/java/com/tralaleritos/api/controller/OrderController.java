@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,21 +32,24 @@ public class OrderController {
     public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO request) {
         try {
             Optional<Order> orderOptional = orderService.createOrder(request);
-            
+
             if (orderOptional.isPresent()) {
                 return new ResponseEntity<>(orderOptional.get(), HttpStatus.CREATED); // 201 CREATED
             } else {
-                 return new ResponseEntity<>("Usuario o uno o más productos no encontrados.", HttpStatus.NOT_FOUND); // 404 Not Found
+                return new ResponseEntity<>("Usuario o uno o más productos no encontrados.", HttpStatus.NOT_FOUND); // 404
+                                                                                                                    // Not
+                                                                                                                    // Found
             }
-            
+
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // 400 Bad Request
-            
+
         } catch (Exception e) {
-            return new ResponseEntity<>("Error interno del servidor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+            return new ResponseEntity<>("Error interno del servidor: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
-    
+
     // Endpoint 2: GET /api/v1/orders/{id} (Consulta de detalle de un solo pedido)
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable UUID id) {
@@ -53,14 +58,47 @@ public class OrderController {
         if (orderOptional.isPresent()) {
             return new ResponseEntity<>(orderOptional.get(), HttpStatus.OK); // 200 OK
         } else {
-            return new ResponseEntity<>("Pedido con ID " + id + " no encontrado.", HttpStatus.NOT_FOUND); // 404 Not Found
+            return new ResponseEntity<>("Pedido con ID " + id + " no encontrado.", HttpStatus.NOT_FOUND); // 404 Not
+                                                                                                          // Found
         }
     }
-    
-    // Endpoint 3: GET /api/v1/orders/user/{userId} (Consulta de TODOS los pedidos de un usuario)
+
+    // Endpoint 3: GET /api/v1/orders/user/{userId} (Consulta de TODOS los pedidos
+    // de un usuario)
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable UUID userId) {
         List<Order> orders = orderService.findAllOrdersByUserId(userId);
         return new ResponseEntity<>(orders, HttpStatus.OK); // 200 OK
+    }
+
+    // Endpoint 4: GET /api/v1/orders (Consulta de TODOS los pedidos)
+    @GetMapping
+    public ResponseEntity<List<Order>> getOrders() {
+        List<Order> orders = orderService.findAllOrders();
+
+        if (!orders.isEmpty()) {
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // Endpoint 5: PUT /api/v1/orders/{id} (Actualizar un pedido)
+    @PutMapping("/{id}")
+    public ResponseEntity<Order> updateOrder(@PathVariable UUID id, @RequestBody Order orderDetails) {
+        if (!id.equals(orderDetails.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Order updated = orderService.updateOrder(orderDetails);
+
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    // Endpoint 6: DELETE /api/v1/orders/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable UUID id) {
+        orderService.deleteOrder(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
