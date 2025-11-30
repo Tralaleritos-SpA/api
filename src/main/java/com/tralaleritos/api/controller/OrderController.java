@@ -84,13 +84,6 @@ public class OrderController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
-
-        List<Order> orders = orderService.findAllOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
-    }
-
     // Endpoint 4: GET /api/v1/orders (Consulta de TODOS los pedidos)
     @GetMapping
     public ResponseEntity<List<Order>> getOrders() {
