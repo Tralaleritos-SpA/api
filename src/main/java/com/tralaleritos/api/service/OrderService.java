@@ -99,7 +99,16 @@ public class OrderService {
         return Optional.of(orderRepository.save(newOrder));
     }
 
-    // MÉTODO 3: Consulta de TODOS los pedidos
+    public Optional<Order> updateOrderStatus(UUID id, String newStatus) {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            order.setStatus(newStatus);
+            return Optional.of(orderRepository.save(order));
+        }
+        return Optional.empty();
+    }
+
     public List<Order> findAllOrders() {
         return orderRepository.findAll();
     }
