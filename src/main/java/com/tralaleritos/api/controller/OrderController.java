@@ -9,12 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.bind.annotation.PutMapping;
 import com.tralaleritos.api.DTO.OrderStatusUpdateDTO;
 
 import com.tralaleritos.api.DTO.OrderRequestDTO;
@@ -51,7 +52,7 @@ public class OrderController {
         }
     }
 
-    // (Consulta de detalle de un solo pedido)
+    // Endpoint 2: GET /api/v1/orders/{id} (Consulta de detalle de un solo pedido)
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable UUID id) {
         Optional<Order> orderOptional = orderService.findOrderById(id);
@@ -88,5 +89,36 @@ public class OrderController {
 
         List<Order> orders = orderService.findAllOrders();
         return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    // Endpoint 4: GET /api/v1/orders (Consulta de TODOS los pedidos)
+    @GetMapping
+    public ResponseEntity<List<Order>> getOrders() {
+        List<Order> orders = orderService.findAllOrders();
+
+        if (!orders.isEmpty()) {
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // Endpoint 5: PUT /api/v1/orders/{id} (Actualizar un pedido)
+    @PutMapping("/{id}")
+    public ResponseEntity<Order> updateOrder(@PathVariable UUID id, @RequestBody Order orderDetails) {
+        if (!id.equals(orderDetails.getId())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Order updated = orderService.updateOrder(orderDetails);
+
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    // Endpoint 6: DELETE /api/v1/orders/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable UUID id) {
+        orderService.deleteOrder(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

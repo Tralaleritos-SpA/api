@@ -109,8 +109,17 @@ public class OrderService {
         return Optional.empty();
     }
 
-    
     public List<Order> findAllOrders() {
         return orderRepository.findAll();
+    }
+
+    // MÉTODO 4: Actualizar pedido (simple passthrough to repository)
+    public Order updateOrder(Order orderDetails) {
+        return orderRepository.save(orderDetails);
+    }
+
+    // MÉTODO 5: Eliminar pedido
+    public void deleteOrder(UUID id) {
+        orderRepository.deleteById(id);
     }
 }
