@@ -29,7 +29,7 @@ public class Order {
     private LocalDateTime createdAt = LocalDateTime.now();
     
     @Column(nullable = false, length = 50)
-    private String status = "PENDING";
+    private String status = "PENDIENTE";
     
     // --- CAMPOS DE ENVÍO Y CONTACTO AÑADIDOS ---
     @Column(nullable = false, length = 100)
